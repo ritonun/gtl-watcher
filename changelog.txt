@@ -1,0 +1,17 @@
+CHANGELOG
+
+
+21/08/2022
+Create the project
+Get text from screenshot (lang=fra) & save/import data from csv
+Implement language.py file to select file with data dependant on language
+	add language_var dict to change language variable of the GTL interface
+implement ocr.py file to structure project
+implement sldata.py to handle saving/loading data to csv
+
+22/08/2022
+create analysis.py and test matplotlib plot with data
+Implement pandas DataFrame
+
+23/08/2021
+add pip requirements file
