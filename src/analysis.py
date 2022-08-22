@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import datetime
 
+
 def graph_data(data):
     x = []
     y = []
@@ -15,4 +16,3 @@ def graph_data(data):
     fig.autofmt_xdate()
     # ax.fmt_xdata = mdates.DateFormatter('%Y-%m-%d')
     plt.show()
-

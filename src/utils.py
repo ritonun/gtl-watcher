@@ -1,6 +1,7 @@
 import os
 import time
 
+
 def get_creation_time_of_img(path):
     mt = os.path.getmtime(path)
     ct = os.path.getctime(path)
