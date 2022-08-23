@@ -14,5 +14,5 @@ def import_csv():
 def save_to_csv(df, sep=";"):
     df_stock = import_csv()
     new_df = pd.concat([df_stock, df], ignore_index=True)
-    new_df.to_csv(output_path, sep=";", encoding="ansi")
+    new_df.to_csv(output_path, sep=";", encoding="ansi", index=False)
     return new_df

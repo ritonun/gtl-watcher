@@ -4,6 +4,7 @@ Optical Character Recognition
 """
 import pytesseract
 import pandas as pd
+import string
 
 import language
 import utils
@@ -15,11 +16,8 @@ output = pytesseract.Output.DICT  #STRING, BYTES, DATAFRAME, DICT
 custom_timeout = 5  # time in seconds after wich process is terminated
 pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract'
 
-img_path = "../data/img/screen.png"
-
 global_language = "fra"
 pokemon_names = language.load_pokemon_name(global_language) # list of all pokemon name in pokemmo in custom language
-date_time = utils.get_creation_time_of_img(img_path)
 language_var = language.dict_language_var(global_language)
 
 
@@ -43,13 +41,15 @@ class CleanInput:
         return price
 
     def clean_word(word):
-        word = word.replace("[", "")
-        word = word.replace("]", "")
-        word = word.replace(" ", "")
-        word = word.replace("|", "")
-        word = word.replace("'", "")
-        word = word.strip()
-        return word
+        all_char = string.printable
+        special_chars = all_char[62:].replace("$", "").replace(",", "").replace(".", "")
+
+        cleaned_word = ''
+        for char in word:
+            if char not in special_chars and char != " ":
+                cleaned_word += char
+        cleaned_word = cleaned_word.strip()
+        return cleaned_word
 
 
 def get_text_from_image(img_path):
@@ -57,12 +57,14 @@ def get_text_from_image(img_path):
                                          output_type=output, timeout=custom_timeout)
     return ocr_data
 
+
 def keep_line(line):
     keep = False
     for word in line:
         if word.find(language_var["buy"]) != -1:
             keep = True
     return keep
+
 
 def get_text_line_per_line(ocr_data):
     len_data = len(ocr_data["level"])
@@ -78,7 +80,8 @@ def get_text_line_per_line(ocr_data):
         line.append(ocr_data["text"][index])
     return lines[1:]
 
-def get_data_list(table):
+
+def get_data_list(table, datetime):
     data = []
     for line in table:
         lvl = None
@@ -98,17 +101,18 @@ def get_data_list(table):
         if lvl == None:
             lvl = 0
         if not name == '':
-            data.append([date_time, lvl, name, price])
+            data.append([datetime, lvl, name, price])
     return data
 
-def get_df(data):
-    pass
 
 def ocr_dataframe(img_path):
     # Get ocr data and clean data
     ocr_data = get_text_from_image(img_path)
     lines = get_text_line_per_line(ocr_data)
-    data = get_data_list(lines)
+
+    date_time = utils.get_creation_time_of_img(img_path)
+
+    data = get_data_list(lines, date_time)
 
     # Get panda DataFrame
     df = pd.DataFrame.from_dict(data)
